@@ -14,11 +14,11 @@ return new class extends Migration
     {
         if(!Schema::hastable('funcionarios')){
             Schema::create('funcionarios', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('setor', 50);
-            $table->string('funcao', 50);
-            $table->date('data_admissao');
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->string('setor', 50);
+                $table->string('funcao', 50);
+                $table->date('data_admissao');
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->timestamps();
             });

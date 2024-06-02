@@ -3,56 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Funcionario;
+use Exception;
 use Illuminate\Http\Request;
 
 class FuncionarioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json(['ret' => 1, 'data' => Funcionario::all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'user_id' => 'required|integer|numeric',
+                'setor' => 'required|string',
+                'funcao' => 'required|string',
+                'data_admissao' => 'required|date'
+            ]);
+
+            $data = $request->only([
+                'user_id',
+                'setor',
+                'funcao',
+                'data_admissao'
+            ]);
+
+            $funcionario = Funcionario::create($data);
+
+            return response()->json(['ret' => 1, 'data' => $funcionario]);
+        } catch(Exception $e) {
+            return response()->json(['ret' => 0, 'msg' => $e->getMessage()]);
+        }
+
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Funcionario $funcionario)
     {
-        //
+        return response()->json(['ret' => 1, 'data' => $funcionario->load('user')]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Funcionario $funcionario)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Funcionario $funcionario)
     {
-        //
+        try {
+            $request->validate([
+                'user_id' => 'required|integer|numeric',
+                'setor' => 'required|string',
+                'funcao' => 'required|string',
+                'data_admissao' => 'required|date'
+            ]);
+
+            $funcionario->update($request->all());
+            return response()->json(['ret' => 1, 'data' => $funcionario]);
+        } catch(Exception $e) {
+            return response()->json(['ret' => 0, 'msg' => $e->getMessage()]);
+        }
+
     }
 
     /**
@@ -60,6 +67,7 @@ class FuncionarioController extends Controller
      */
     public function destroy(Funcionario $funcionario)
     {
-        //
+        $funcionario->delete();
+        return response()->json(['ret' => 1, 'msg' => 'Usuário deletado']); 
     }
 }
